@@ -108,6 +108,15 @@ esp_err_t http_register_handler(http_server_t server, const char* uri_pattern, i
                                 int events, http_handler_fn_t callback, void* callback_arg);
 
 /**
+ * @brief      { function_description }
+ *
+ * @param[in]  server  The server
+ *
+ * @return     { description_of_the_return_value }
+ */
+esp_err_t http_unregister_all_handlers(http_server_t server);
+
+/**
  * @brief Register a handler for application/x-www-form-urlencoded requests
  *
  * Unlike http_register_handler, handlers registered using this function will

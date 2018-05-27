@@ -133,6 +133,21 @@ esp_err_t http_register_handler(http_server_t server,
     return ESP_OK;
 }
 
+
+esp_err_t http_unregister_all_handlers(http_server_t server)
+{
+    http_handler_t* it, *next;
+    _lock_acquire(&server->handlers_lock);
+
+    SLIST_FOREACH_SAFE(it, &server->handlers, list_entry, next) {
+        free(it->uri_pattern);
+        free(it);
+        SLIST_REMOVE(&server->handlers, it, http_handler_t, list_entry);
+    }
+    _lock_release(&server->handlers_lock);
+    return ESP_OK;
+}
+
 static http_handler_t* http_find_handler(http_server_t server, const char* uri, int method)
 {
     http_handler_t* it;
@@ -654,6 +669,7 @@ static const char* http_response_code_to_str(int code)
         case 301: return "Moved Permanently";
         case 302: return "Found";
         case 400: return "Bad Request";
+        case 401: return "Unauthorized";
         case 404: return "Not Found";
         case 405: return "Method Not Allowed";
         case 500: return "Internal Server Error";
